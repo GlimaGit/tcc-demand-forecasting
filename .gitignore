@@ -1,6 +1,8 @@
-.venv/
+DECISOES.md
+PENDENCIAS.md
+instructions.md
+EXECUCAO.md
+data/
+.DS_Store
+*.pyc
 __pycache__/
-models/
-*.png
-*.csv
-
