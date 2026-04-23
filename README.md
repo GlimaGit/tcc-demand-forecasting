@@ -1,54 +1,81 @@
-# 🛒 Inventory Optimization Agents – TCC
+# TCC — Previsão de Demanda em Varejo com Modelos de Machine Learning
 
-Este repositório contém o código, dados e documentação do Trabalho de Conclusão de Curso (MBA em Data Science & Analytics – 2025) intitulado:
-**“Implementação de Agentes Autônomos para Otimização da Gestão de Estoque no E-commerce”**.
+**Aluno:** MBA em Data Science e Analytics — USP/Esalq  
+**Tema:** Comparação de modelos de previsão de demanda no segmento BEVERAGES (bebidas) do varejo equatoriano  
+**Dataset:** Store Sales — Time Series Forecasting (Corporación Favorita, Equador)
 
-## 📌 Objetivo
+---
 
-O projeto tem como objetivo desenvolver agentes autônomos de Inteligência Artificial capazes de:
+## Contexto
 
-1. **Prever a demanda de produtos** em cenários de e-commerce.
-2. **Otimizar os níveis de estoque**, reduzindo custos de armazenagem e prevenindo rupturas.
-3. **Simular cenários alternativos** para comparar a abordagem baseada em agentes com políticas tradicionais de reabastecimento.
+Este projeto implementa e compara cinco modelos de previsão de demanda aplicados à série temporal diária de vendas da categoria BEVERAGES, agregada para toda a rede de 54 lojas da Corporación Favorita (2013–2017).
 
-## 🗂 Estrutura do Repositório
+---
+
+## Dataset
+
+Fonte: [Kaggle — Store Sales Time Series Forecasting](https://www.kaggle.com/competitions/store-sales-time-series-forecasting)
+
+Arquivos em `data/`:
+| Arquivo | Descrição |
+|---------|-----------|
+| `train.csv` | 3.000.888 linhas; vendas diárias por loja e família (2013-01-01 a 2017-08-15) |
+| `stores.csv` | Metadados das 54 lojas (cidade, estado, tipo, cluster) |
+| `holidays_events.csv` | 350 feriados/eventos por tipo e escopo |
+| `oil.csv` | Preço diário do petróleo WTI (proxy macroeconômica) |
+| `transactions.csv` | Transações diárias por loja |
+
+> `test.csv` **não é utilizado** — não contém a coluna `sales`. O split treino/teste é feito a partir do próprio `train.csv`.
+
+---
+
+## Estrutura do Projeto
 
 ```
-tcc-inventory-agent/
-  data/               # Conjuntos de dados (sintéticos ou reais)
-    raw/              # Dados brutos (simulados, não processados)
-    processed/        # Dados limpos e transformados
-  notebooks/          # Experimentos exploratórios em Jupyter
-  scripts/            # Scripts de geração e preparação de dados
-  src/                # Código-fonte principal (modelos, agentes, dashboards)
-  models/             # Modelos treinados salvos
-  reports/            # Saídas do projeto (figuras, tabelas, métricas)
-    figures/
-    tables/
-  docs/               # Documentação e rascunhos do TCC
+tcc-demand-forecasting/
+├── data/
+│   ├── *.csv                  # CSVs originais
+│   └── processed/             # Dados processados pelo pipeline
+├── notebooks/
+│   ├── 01_preparacao.ipynb    # Etapa 1: carregamento e preparação
+│   ├── 02_eda.ipynb           # Etapa 2: análise exploratória
+│   ├── 03_features.ipynb      # Etapa 3: feature engineering
+│   ├── 04_modelagem.ipynb     # Etapas 4+5: split temporal e modelagem
+│   └── 05_avaliacao.ipynb     # Etapa 6: avaliação e gráficos
+├── outputs/
+│   ├── figures/               # Gráficos gerados
+│   └── tables/                # Tabelas exportadas
+├── README.md                  # Este arquivo
+└── requirements.txt           # Dependências Python
 ```
 
-## ⚙️ Tecnologias Utilizadas
+---
 
-* **Linguagem:** Python 3.9+
-* **Bibliotecas principais:**
+## Como Reproduzir
 
-  * Manipulação de dados: `pandas`, `numpy`
-  * Visualização: `matplotlib`, `seaborn`, `plotly`
-  * Machine Learning: `prophet`, `xgboost`, `scikit-learn`
-  * Otimização: `scipy.optimize`, `PuLP`
-  * Simulação: `simpy`
-  * Dashboard: `streamlit`
+### Requisitos
+- Python 3.10+
+- Instalar dependências: `pip install -r requirements.txt`
 
-## 📊 Resultados Parciais
+### Execução (ordem obrigatória)
+```bash
+jupyter notebook
+```
+Executar os notebooks em ordem: `01_preparacao` → `02_eda` → `03_features` → `04_modelagem` → `05_avaliacao`
 
-* Dataset sintético representativo de e-commerce.
-* Primeira previsão de demanda utilizando Prophet.
-* Métricas iniciais (MAPE) para SKUs de maior rotatividade.
-* Gráficos comparativos de previsão vs valores reais.
+> Fixação de aleatoriedade: `random_state=42` e `np.random.seed(42)` em todo o pipeline.
 
-## ✍️ Autor
+---
 
-**Gabriel Lima Soares**
+## Modelos Comparados
 
-MBA em Data Science & Analytics – 2025
+| Modelo | Tipo |
+|--------|------|
+| Naive | Baseline |
+| Sazonal Naive | Baseline |
+| SARIMA (1,1,1)(1,1,1,7) | Estatístico clássico |
+| Prophet | Modelo aditivo decomponível |
+| XGBoost | ML de regressão |
+
+**Métricas:** MAE, RMSE, sMAPE (Makridakis, 1993)  
+**Validação:** hold-out temporal — últimos 90 dias como teste
