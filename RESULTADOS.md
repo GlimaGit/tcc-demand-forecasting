@@ -1,8 +1,5 @@
 # RESULTADOS.md — Resultados e Interpretação
 
-Este arquivo é o canal principal entre a execução (agente) e a redação acadêmica do TCC (sessão não-agente). Todos os números aqui devem ser reais — extraídos diretamente da execução dos notebooks. Nenhum valor deve ser estimado ou fictício.
-
----
 
 ## Estatísticas Descritivas da Série
 
